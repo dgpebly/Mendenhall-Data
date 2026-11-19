@@ -1,0 +1,123 @@
+---
+title: "Body Image"
+output: html_document
+date: "2026-11-19"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+setwd("C:/Users/dgpeb/Downloads/Mendenhall_DataSets_Excel/Exercise_Examples")
+getwd()
+```
+
+```{r data setup}
+body <- read.csv("BDYIMG.csv")
+```
+
+# Model: Full
+```{r full model where y is selfesteem }
+body_lm.F <- lm(SELFESTM ~ BODYSAT + IMPREAL + DESIRE + GENDER, body)
+summary(body_lm.F)
+
+b_lm.F_res <- residuals(body_lm.F)
+b_lm.F_fit <- fitted(body_lm.F)
+plot( b_lm.F_fit, b_lm.F_res, 
+     xlab = "Fitted Values",
+     ylab = "Residuals",
+     main = "Full Model Residual Plot")
+abline(0,0)
+```
+
+# Model: Self Esteem (y), Body Satisfaction (x1)
+```{r 1 var reduced model}
+body_lm.R1 <- lm(SELFESTM ~ BODYSAT, body)
+summary(body_lm.R1)
+
+b_lm.R1_res <- residuals(body_lm.R1)
+b_lm.R1_fit <- fitted(body_lm.R1)
+plot(b_lm.R1_fit, b_lm.R1_res,
+     xlab = "Fitted Values",
+     ylab = "Residuals",
+     main = "SELFESTM ~ BODYSAT Residual Plot")
+abline(0,0)
+```
+
+# Model: Self Esteem (y), Body Satisfaction (x1), Gender (x2)
+```{r 2 var reduced model}
+b_lm.R2 <- lm(SELFESTM ~ BODYSAT + GENDER, body)
+summary(b_lm.R2)
+
+b_lm.R2_fit <- fitted(b_lm.R2)
+b_lm.R2_res <- residuals(b_lm.R2)
+plot(b_lm.R2_fit, b_lm.R2_res,
+     xlab = "Fitted Values",
+     ylab = "Residuals",
+     main = "SELFESTM ~ BODYSAT + GENDER")
+abline(0,0)
+```
+
+# Model: Self Esteem (y), Body Satisfaction (x1), Gender (x2), Desire (x3)
+```{r 3 var reduced model}
+b_lm.R3 <- lm(SELFESTM ~ BODYSAT + GENDER + DESIRE, body)
+summary(b_lm.R3)
+```
+
+# Model: Self Esteem (y), Body Satisfaction (x1), Gender (x2) - Multiplicative
+```{r 2 var multiplicative model}
+b_lm.R2M <- lm(SELFESTM ~ BODYSAT * GENDER, body)
+summary(b_lm.R2M)
+```
+
+# Model: Self Esteem (y), Body Satisfaction (x1), Gender (x2) - Interaction
+```{r 2 var interaction model}
+b_lm.R2I <- lm(SELFESTM ~ BODYSAT + GENDER + GENDER*BODYSAT, body)
+summary(b_lm.R2I)
+```
+
+# Model: Self Esteem (y), Body Satisfaction (x1), Gender (x2) - Quadratic (Body)
+```{r 2 var quadratic model}
+b_lm.R2Q <- lm(SELFESTM ~ BODYSAT + GENDER + BODYSAT*BODYSAT, body)
+summary(b_lm.R2Q)
+
+b_lm.R2Q_fit <- fitted(b_lm.R2Q)
+b_lm.R2Q_res <- residuals(b_lm.R2Q)
+plot(b_lm.R2Q_fit, b_lm.R2Q_res,
+     xlab = "Fitted Values",
+     ylab = "Residuals",
+     main = "Residuals of Quadratic SELFESTM ~ BODYSAT + GENDER")
+abline(0,0)
+```
+
+# Model: Self Esteem (y), Body Satisfaction (x1), Gender (x2) - Full 2nd Order
+```{r 2 var second order full model}
+b_lm.R2.2O <- lm(SELFESTM ~ BODYSAT + GENDER +
+                   BODYSAT*BODYSAT + GENDER*GENDER + BODYSAT*GENDER, body)
+summary(b_lm.R2.2O)
+```
+
+# Investigate Body Satisfaction and Gender
+```{r bodysat and gender}
+cor(body$BODYSAT, body$GENDER)
+cor(body$SELFESTM, body$BODYSAT)
+cor(body$SELFESTM, body$GENDER)
+```
+# Model: Log Transformed Equation for
+# Self Esteem (y), Body Satisfaction (x1), Gender (x2) - Quadratic (Body)
+```{r log transformation}
+body$SELFESTM <- log(body$SELFESTM)
+body$BODYSAT <- log(body$BODYSAT)
+
+b_loglm.R2Q <- lm(SELFESTM ~ BODYSAT + GENDER + BODYSAT*BODYSAT, body)
+summary(b_loglm.R2Q)
+```
+# Model: Log Transformed Equation for
+# Self Esteem (y), Body Satisfaction (x1), Gender (x2)
+```{r}
+b_loglm.R2 <- lm(SELFESTM ~ BODYSAT + GENDER, body)
+summary(b_loglm.R2)
+```
+# Model: Log Transformed Equation for
+# Self Esteem (y), Body Satisfaction (x1), Gender (x2) - Multiplicative
+```{r multiplicative log transform}
+b_loglm.R2M <- lm(SELFESTM ~ BODYSAT * GENDER, body)
+summary(b_loglm.R2M)
