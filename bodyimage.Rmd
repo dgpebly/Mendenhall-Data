@@ -104,7 +104,6 @@ cor(body$SELFESTM, body$GENDER)
 # Self Esteem (y), Body Satisfaction (x1), Gender (x2) - Quadratic (Body)
 ```{r log transformation}
 body$SELFESTM <- log(body$SELFESTM)
-body$BODYSAT <- log(body$BODYSAT)
 
 b_loglm.R2Q <- lm(SELFESTM ~ BODYSAT + GENDER + BODYSAT*BODYSAT, body)
 summary(b_loglm.R2Q)
@@ -152,10 +151,12 @@ se_lm_res <- residuals(se_lm)
 plot(body$BODYSAT, b_lm.g_res,
      xlab = "BODYSAT",
      ylab = "SELFESTM Partial Residuals",
-     main = "Partial Residuals of (log) BODYSAT")
+     main = "Partial Residuals of BODYSAT",
+     abline(h=0))
 plot(body$BODYSAT, se_lm_res,
      xlab = "BODYSAT",
      ylab = "BODYSAT Partial Residuals",
-     main = "Partial Residuals of (log) BODYSAT")
+     main = "Partial Residuals of BODYSAT",
+     abline(h=0))
 
 ```
